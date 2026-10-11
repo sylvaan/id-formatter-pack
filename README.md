@@ -4,7 +4,6 @@
 
 [![npm version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/sylvaan/id-formatter-pack)
 [![license](https://img.shields.io/badge/license-ISC-green.svg)](https://github.com/sylvaan/id-formatter-pack)
-[![typescript](https://img.shields.io/badge/TypeScript-Ready-3178C6.svg)](https://www.typescriptlang.org/)
 
 ---
 
@@ -25,22 +24,22 @@ npm install id-formatter-pack
 Format angka ke format standar mata uang Rupiah dengan opsi desimal dan simbol.
 
 ```typescript
-import { formatRupiah } from '@sylvaan/id-formatter-pack';
+import { formatRupiah } from "@sylvaan/id-formatter-pack";
 
 // Standar
-formatRupiah(50000); 
+formatRupiah(50000);
 // -> "Rp 50.000"
 
 // Tanpa Simbol "Rp"
-formatRupiah(50000, { withSymbol: false }); 
+formatRupiah(50000, { withSymbol: false });
 // -> "50.000"
 
 // Dengan Desimal Sen
-formatRupiah(50000, { withDecimal: true }); 
+formatRupiah(50000, { withDecimal: true });
 // -> "Rp 50.000,00"
 
 // Menerima input string numerik
-formatRupiah("1250000"); 
+formatRupiah("1250000");
 // -> "Rp 1.250.000"
 ```
 
@@ -51,15 +50,15 @@ formatRupiah("1250000");
 Mengubah angka nominal menjadi ejaan kalimat Rupiah bahasa Indonesia secara otomatis.
 
 ```typescript
-import { terbilang } from '@sylvaan/id-formatter-pack';
+import { terbilang } from "@sylvaan/id-formatter-pack";
 
-terbilang(150000); 
+terbilang(150000);
 // -> "Seratus Lima Puluh Ribu Rupiah"
 
-terbilang(2500000); 
+terbilang(2500000);
 // -> "Dua Juta Lima Ratus Ribu Rupiah"
 
-terbilang(0); 
+terbilang(0);
 // -> "Nol Rupiah"
 ```
 
@@ -70,18 +69,18 @@ terbilang(0);
 Format objek `Date`, string ISO, atau timestamp ke penanggalan standar Indonesia.
 
 ```typescript
-import { formatIndoDate } from '@sylvaan/id-formatter-pack';
+import { formatIndoDate } from "@sylvaan/id-formatter-pack";
 
 // Default (Bulan Panjang)
-formatIndoDate("2026-10-10"); 
+formatIndoDate("2026-10-10");
 // -> "10 Oktober 2026"
 
 // Bulan Pendek
-formatIndoDate("2026-10-10", { monthFormat: "short" }); 
+formatIndoDate("2026-10-10", { monthFormat: "short" });
 // -> "10 Okt 2026"
 
 // Dengan Waktu (WIB)
-formatIndoDate(new Date(), { withTime: true }); 
+formatIndoDate(new Date(), { withTime: true });
 // -> "11 Oktober 2026, 16.11 WIB"
 ```
 
@@ -92,22 +91,22 @@ formatIndoDate(new Date(), { withTime: true });
 Normalisasi input nomor HP yang berantakan menjadi format standar internasional (+62) atau lokal (08).
 
 ```typescript
-import { formatNoHP } from '@sylvaan/id-formatter-pack';
+import { formatNoHP } from "@sylvaan/id-formatter-pack";
 
 // Default (+62 dengan strip)
-formatNoHP("08123456789"); 
+formatNoHP("08123456789");
 // -> "+62 812-3456-789"
 
 // Format Lokal (08)
-formatNoHP("08123456789", { withCountryCode: false }); 
+formatNoHP("08123456789", { withCountryCode: false });
 // -> "0812-3456-789"
 
 // Format Polos tanpa Strip
-formatNoHP("08123456789", { pretty: false }); 
+formatNoHP("08123456789", { pretty: false });
 // -> "+628123456789"
 
 // Menerima input kotor dengan spasi / karakter khusus
-formatNoHP("+62 812 3456 7890"); 
+formatNoHP("+62 812 3456 7890");
 // -> "+62 812-3456-7890"
 ```
 
@@ -117,17 +116,6 @@ formatNoHP("+62 812 3456 7890");
 
 - **Language**: TypeScript
 - **Bundler**: `tsup` (ESM & CJS + Type Declarations)
-- **Test Runner**: `vitest` (100% Passed)
-
-```bash
-# Build
-npm run build
-
-# Run Unit Tests
-npm test
-```
-
----
 
 ## 📄 License
 
