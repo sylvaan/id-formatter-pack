@@ -10,6 +10,18 @@ describe('formatIndoDate', () => {
     expect(formatIndoDate('2026-10-10', { monthFormat: 'short' })).toBe('10 Okt 2026');
   });
 
+  it('should show WIB time regardless of the system time zone', () => {
+    const tz = process.env.TZ;
+    process.env.TZ = 'UTC';
+    try {
+      expect(formatIndoDate('2026-10-10T03:50:00Z', { withTime: true })).toBe('10 Oktober 2026, 10.50 WIB');
+      expect(formatIndoDate('2026-10-10T20:00:00Z', { withTime: true })).toBe('11 Oktober 2026, 03.00 WIB');
+    } finally {
+      if (tz === undefined) delete process.env.TZ;
+      else process.env.TZ = tz;
+    }
+  });
+
   it('should return Invalid Date for invalid inputs', () => {
     expect(formatIndoDate('invalid-date')).toBe('Invalid Date');
   });

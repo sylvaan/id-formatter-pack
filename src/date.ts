@@ -27,14 +27,21 @@ export function formatIndoDate(
     day: "numeric",
     month: monthFormat,
     year: "numeric",
+    timeZone: "Asia/Jakarta",
   }).format(date);
 
   if (!withTime) {
     return formattedDate;
   }
 
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const time = new Intl.DateTimeFormat("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "Asia/Jakarta",
+  }).formatToParts(date);
+  const hours = time.find((p) => p.type === "hour")!.value;
+  const minutes = time.find((p) => p.type === "minute")!.value;
 
   return `${formattedDate}, ${hours}.${minutes} WIB`;
 }
