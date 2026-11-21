@@ -28,7 +28,10 @@ export function formatNoHP(
 
   let cleaned = phone.replace(/\D/g, "");
 
-  if (cleaned.startsWith("0")) {
+  if (cleaned.startsWith("620")) {
+    // "+62 0812..." keeps the trunk zero after the country code; drop it.
+    cleaned = "62" + cleaned.slice(3);
+  } else if (cleaned.startsWith("0")) {
     cleaned = "62" + cleaned.slice(1);
   } else if (cleaned.startsWith("8")) {
     cleaned = "62" + cleaned;
@@ -39,6 +42,11 @@ export function formatNoHP(
   }
 
   const subscriberNumber = cleaned.slice(2);
+
+  // Indonesian mobile subscriber numbers are at most 12 digits long.
+  if (subscriberNumber.length > 12) {
+    return phone;
+  }
 
   const prefix = withCountryCode ? "+62 " : "0";
 

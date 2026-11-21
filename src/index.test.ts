@@ -13,6 +13,14 @@ describe('formatIndoDate', () => {
   it('should return Invalid Date for invalid inputs', () => {
     expect(formatIndoDate('invalid-date')).toBe('Invalid Date');
   });
+
+  it('should return Invalid Date for null instead of the epoch date', () => {
+    expect(formatIndoDate(null as unknown as Date)).toBe('Invalid Date');
+  });
+
+  it('should return Invalid Date for impossible calendar dates', () => {
+    expect(formatIndoDate('2026-02-31')).toBe('Invalid Date');
+  });
 });
 
 describe('formatRupiah', () => {
@@ -27,6 +35,27 @@ describe('formatRupiah', () => {
   it('should format with decimal when withDecimal is true', () => {
     expect(formatRupiah(50000, { withDecimal: true })).toBe('Rp 50.000,00');
   });
+
+  it('should parse string amounts using Indonesian separators', () => {
+    expect(formatRupiah('50.000')).toBe('Rp 50.000');
+    expect(formatRupiah('1,5', { withDecimal: true })).toBe('Rp 1,50');
+  });
+
+  it('should accept strings that carry the Rp symbol', () => {
+    expect(formatRupiah('Rp 50000')).toBe('Rp 50.000');
+  });
+
+  it('should not partially parse strings with trailing junk', () => {
+    expect(formatRupiah('12abc')).toBe('Rp 0');
+  });
+
+  it('should not format Infinity as a currency amount', () => {
+    expect(formatRupiah(Infinity)).toBe('Rp 0');
+  });
+
+  it('should not print a negative sign for amounts that round to zero', () => {
+    expect(formatRupiah(-0.4)).toBe('Rp 0');
+  });
 });
 
 describe('terbilang', () => {
@@ -36,6 +65,15 @@ describe('terbilang', () => {
 
   it('should handle zero correctly', () => {
     expect(terbilang(0)).toBe('Nol Rupiah');
+  });
+
+  it('should spell amounts below one rupiah as zero', () => {
+    expect(terbilang(0.5)).toBe('Nol Rupiah');
+    expect(terbilang(-0.5)).toBe('Nol Rupiah');
+  });
+
+  it('should not crash on Infinity', () => {
+    expect(terbilang(Infinity)).toBe('Nol Rupiah');
   });
 });
 
@@ -50,5 +88,13 @@ describe('formatNoHP', () => {
 
   it('should return unformatted phone number without pretty option', () => {
     expect(formatNoHP('08123456789', { pretty: false })).toBe('+628123456789');
+  });
+
+  it('should strip the trunk zero after the country code', () => {
+    expect(formatNoHP('+62 0812 3456 789')).toBe('+62 812-3456-789');
+  });
+
+  it('should leave overly long numbers unformatted', () => {
+    expect(formatNoHP('08123456789012345')).toBe('08123456789012345');
   });
 });

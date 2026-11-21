@@ -16,21 +16,43 @@ export interface FormatRupiahOptions {
  * Format angka ke mata uang Rupiah.
  * Contoh: formatRupiah(50000) -> "Rp 50.000"
  */
+/**
+ * Parse string amounts using Indonesian conventions: "." is the thousands
+ * separator and "," is the decimal separator ("50.000" -> 50000, "1,5" -> 1.5).
+ * A leading "Rp" is allowed. Anything that is not a well-formed amount
+ * returns NaN instead of being partially parsed.
+ */
+function parseRupiahString(amount: string): number {
+  const cleaned = amount.replace(/rp/gi, "").replace(/\s+/g, "");
+
+  if (
+    !/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(cleaned) &&
+    !/^-?\d+(,\d+)?$/.test(cleaned)
+  ) {
+    return NaN;
+  }
+
+  return parseFloat(cleaned.replace(/\./g, "").replace(",", "."));
+}
+
 export function formatRupiah(
   amount: number | string,
   options: FormatRupiahOptions = {},
 ): string {
   const { withSymbol = true, withDecimal = false } = options;
-  const num = typeof amount === "string" ? parseFloat(amount) : amount;
+  const num = typeof amount === "string" ? parseRupiahString(amount) : amount;
 
-  if (isNaN(num)) {
+  if (isNaN(num) || !isFinite(num)) {
     return withSymbol ? "Rp 0" : "0";
   }
+
+  // Avoid printing "-0" for small negative amounts that round to zero.
+  const value = Number(num.toFixed(withDecimal ? 2 : 0)) === 0 ? 0 : num;
 
   const formatted = new Intl.NumberFormat("id-ID", {
     minimumFractionDigits: withDecimal ? 2 : 0,
     maximumFractionDigits: withDecimal ? 2 : 0,
-  }).format(num);
+  }).format(value);
 
   return withSymbol ? `Rp ${formatted}` : formatted;
 }
@@ -40,7 +62,12 @@ export function formatRupiah(
  * Contoh: terbilang(150000) -> "Seratus Lima Puluh Ribu Rupiah"
  */
 export function terbilang(amount: number): string {
-  if (isNaN(amount) || amount === 0) {
+  if (isNaN(amount) || !isFinite(amount)) {
+    return "Nol Rupiah";
+  }
+
+  // Only whole rupiah are spelled out; an amount below one rupiah is zero.
+  if (Math.floor(Math.abs(amount)) === 0) {
     return "Nol Rupiah";
   }
 
